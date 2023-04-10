@@ -30,6 +30,8 @@ local function on_exit(job_id, code, event)
     end
     local buf = vim.api.nvim_get_current_buf()
     vim.api.nvim_win_set_buf(prev_win, buf)
+    vim.fn.win_gotoid(prev_win)
+
   end
 end
 
