@@ -15,10 +15,8 @@ local function get_file_contents(file_path)
 end
 
 local function on_exit(job_id, code, event)
-  vim.notify("Job " .. job_id .. " exited with code " .. code .. " and event " .. event)
   vim.pretty_print({ job_id, code, event })
   local contents = get_file_contents(vim.g.patra_temp_file)
-  vim.notify("Contents of " .. vim.g.patra_temp_file .. ": " .. contents)
   -- vim.api.nvim_buf_delete(buffer, {})
   buffer = -1
   if code == 0 then
@@ -45,7 +43,6 @@ local function open_patra()
   prev_buf = vim.api.nvim_get_current_buf()
   prev_win = vim.api.nvim_get_current_win()
   dir_path = vim.fn.expand('%:p:h')
-  vim.notify("dir_path: " .. dir_path)
   vim.cmd("enew")
   vim.g.patra_temp_file = vim.fn.tempname()
 
