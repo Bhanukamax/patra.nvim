@@ -15,6 +15,8 @@ local function get_file_contents(file_path)
 end
 
 local function on_exit(job_id, code, event)
+  vim.wo.rnu = true
+  vim.wo.nu = true
   vim.pretty_print({ job_id, code, event })
   local contents = get_file_contents(vim.g.patra_temp_file)
   -- vim.api.nvim_buf_delete(buffer, {})
@@ -29,7 +31,6 @@ local function on_exit(job_id, code, event)
     local buf = vim.api.nvim_get_current_buf()
     vim.api.nvim_win_set_buf(prev_win, buf)
     vim.fn.win_gotoid(prev_win)
-
   end
 end
 
@@ -39,6 +40,17 @@ local function exec_patra_cmd(cmd)
   vim.cmd("startinsert")
 end
 
+local function get_theme()
+  local color = vim.api.nvim_get_hl_by_name("CursorLine", true).background
+  local bit = require("bit")
+  local r = bit.band(bit.rshift(color, 16), 0xff)
+  local g = bit.band(bit.rshift(color, 8), 0xff)
+  local b = bit.band(color, 0xff)
+
+  local cursor_color = string.format("#%02x%02x%02x", r, g, b)
+  return "--theme-file-focus-bg=" .. '"' .. cursor_color .. '"'
+end
+
 local function open_patra()
   prev_buf = vim.api.nvim_get_current_buf()
   prev_win = vim.api.nvim_get_current_win()
@@ -46,7 +58,9 @@ local function open_patra()
   vim.cmd("enew")
   vim.g.patra_temp_file = vim.fn.tempname()
 
-  local cmd = 'patra ' .. dir_path .. ' --selection-path ' .. vim.g.patra_temp_file
+  local cmd = 'patra ' .. dir_path .. ' --selection-path ' .. vim.g.patra_temp_file .. ' ' .. get_theme()
+  vim.wo.rnu = false
+  vim.wo.nu = false
 
   exec_patra_cmd(cmd)
 end
