@@ -40,15 +40,24 @@ local function exec_patra_cmd(cmd)
   vim.cmd("startinsert")
 end
 
-local function get_theme()
-  local color = vim.api.nvim_get_hl_by_name("CursorLine", true).background
+local function get_hl(hl_name, fg_bg)
+  local color = vim.api.nvim_get_hl_by_name(hl_name, true)[fg_bg]
   local bit = require("bit")
   local r = bit.band(bit.rshift(color, 16), 0xff)
   local g = bit.band(bit.rshift(color, 8), 0xff)
   local b = bit.band(color, 0xff)
 
   local cursor_color = string.format("#%02x%02x%02x", r, g, b)
-  return "--theme-file-focus-bg=" .. '"' .. cursor_color .. '"'
+  return cursor_color
+end
+
+local function get_theme()
+  local cursor_color = get_hl("CursorLine", "background")
+  local normal       = get_hl("Normal", "foreground")
+  local theme        = ""
+  theme              = theme .. "--theme-file-focus-bg=" .. '"' .. cursor_color .. '"'
+  theme              = theme .. " --file-fg=" .. '"' .. normal .. '"'
+  return theme
 end
 
 local function open_patra()
