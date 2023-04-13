@@ -57,6 +57,7 @@ local function get_theme()
   local theme        = ""
   theme              = theme .. "--theme-file-focus-bg=" .. '"' .. cursor_color .. '"'
   theme              = theme .. " --file-fg=" .. '"' .. normal .. '"'
+  -- TODO: get and pass Directory color
   return theme
 end
 
