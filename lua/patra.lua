@@ -10,7 +10,7 @@ local function write_to_file(file_path, contents)
     file:write(contents)
     file:close()
   else
-    vim.print("Error: Could not open file " .. file_path)
+    -- vim.print("Error: Could not open file " .. file_path)
   end
 end
 
@@ -27,7 +27,7 @@ end
 local function on_exit(job_id, code, event)
   vim.wo.rnu = true
   vim.wo.nu = true
-  vim.print({ job_id, code, event })
+  -- vim.print({ job_id, code, event })
   local contents = get_file_contents(vim.g.patra_temp_file)
   -- vim.api.nvim_buf_delete(buffer, {})
   buffer = -1
@@ -54,12 +54,12 @@ local function get_hl(hl_name, fg_bg)
   local color = vim.api.nvim_get_hl_by_name(hl_name, true)[fg_bg]
   local bit = require("bit")
   if color == nil then
-    vim.print({
-        "NIL",
-        hl_name,
-        fg_bg,
-        color
-    })
+    -- vim.print({
+    --     "NIL",
+    --     hl_name,
+    --     fg_bg,
+    --     color
+    -- })
     return ""
   end
   local r = bit.band(bit.rshift(color, 16), 0xff)
@@ -106,7 +106,7 @@ local function setup_theme()
   -- TODO: get and pass Directory color
 
 
-  vim.print({ corsor = cursor_color, normal = normal, dir = dir })
+  -- vim.print({ corsor = cursor_color, normal = normal, dir = dir })
   local theme = ''
 
   if normal ~= "" then
@@ -120,7 +120,7 @@ local function setup_theme()
   end
   vim.g.patra_config = vim.fn.tempname()
   local file = vim.g.patra_config
-  vim.print({ the = 'the theme', file, theme })
+  -- vim.print({ the = 'the theme', file, theme })
   write_to_file(file, theme)
 end
 local function setup()
