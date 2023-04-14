@@ -2,7 +2,14 @@ local buffer = -1
 local prev_buf = -1
 local prev_win = -1
 local dir_path = vim.fn.expand('%:p:h')
+vim.g.patra_config = '/home/bmax/.config/patra/test.toml'
 
+local function write_to_file(file_path, contents)
+  local file = io.open(file_path, 'w')
+  if file then
+    file:write(contents)
+  end
+end
 
 local function get_file_contents(file_path)
   local file = io.open(file_path)
@@ -75,6 +82,24 @@ local function open_patra()
   exec_patra_cmd(cmd)
 end
 
+local function setup_theme()
+  local theme = [[
+[theme]
+file_fg = '#ff0000'
+file_focus_bg = '#2a2b3c'
+dir_fg = '#228900'
+  ]]
+  vim.g.patra_config = vim.fn.tempname()
+  local file = vim.g.patra_config
+  write_to_file(file, theme)
+
+  print(theme)
+end
+local function setup()
+  setup_theme()
+end
+
 return {
-    open_patra = open_patra,
+  open_patra = open_patra,
+  setup = setup
 }
