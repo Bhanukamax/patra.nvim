@@ -4,6 +4,8 @@ local prev_win = -1
 local dir_path = vim.fn.expand('%:p:h')
 vim.g.patra_config = '/home/bmax/.config/patra/test.toml'
 
+
+
 local function write_to_file(file_path, contents)
   local file = io.open(file_path, 'w')
   if file then
@@ -128,6 +130,18 @@ local function setup()
   setup_theme()
 end
 
+
+local function hijack_netrw(data)
+    local directory = vim.fn.isdirectory(data.file) == 1
+    if not directory then
+        return
+    end
+
+    vim.cmd.cd(data.file)
+    open_patra()
+end
+
+vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = hijack_netrw })
 
 return {
     open_patra = open_patra,
