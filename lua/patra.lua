@@ -2,9 +2,6 @@ local buffer = -1
 local prev_buf = -1
 local prev_win = -1
 local dir_path = vim.fn.expand('%:p:h')
-vim.g.patra_config = '/home/bmax/.config/patra/test.toml'
-
-
 
 local function write_to_file(file_path, contents)
   local file = io.open(file_path, 'w')
@@ -50,7 +47,7 @@ local function exec_patra_cmd(cmd)
   vim.fn.termopen(cmd, { on_exit = on_exit })
   buffer = vim.api.nvim_get_current_buf()
   vim.cmd("startinsert")
-  vim.cmd[[set ft=patra]]
+  vim.cmd [[set ft=patra]]
 end
 
 local function get_hl(hl_name, fg_bg)
@@ -81,8 +78,10 @@ local function open_patra()
   vim.g.patra_temp_file = vim.fn.tempname()
 
   local cmd = 'patra ' .. dir_path .. ' --selection-path ' .. vim.g.patra_temp_file
-  if vim.g.patra_config ~= nil then
-    cmd = cmd .. ' --config ' .. vim.g.patra_config
+  if vim.g.patra_use_default_theme ~= true then
+    if vim.g.patra_config ~= nil then
+      cmd = cmd .. ' --config ' .. vim.g.patra_config
+    end
   end
   vim.wo.rnu = false
   vim.wo.nu = false
@@ -126,25 +125,30 @@ local function setup_theme()
   -- vim.print({ the = 'the theme', file, theme })
   write_to_file(file, theme)
 end
+
 local function setup()
-  setup_theme()
+  if vim.g.patra_use_default_theme ~= true then
+    setup_theme()
+  end
 end
 
 
 local function hijack_netrw(data)
-    local directory = vim.fn.isdirectory(data.file) == 1
-    if not directory then
-        return
-    end
+  local directory = vim.fn.isdirectory(data.file) == 1
+  if not directory then
+    return
+  end
 
-    vim.cmd.cd(data.file)
-    open_patra()
+  vim.cmd.cd(data.file)
+  open_patra()
 end
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = hijack_netrw })
+if vim.g.patra_hijack_netrw then
+  vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = hijack_netrw })
+end
 
 return {
-    open_patra = open_patra,
-    setup_theme = setup_theme,
-    setup = setup,
+  open_patra = open_patra,
+  setup_theme = setup_theme,
+  setup = setup,
 }
