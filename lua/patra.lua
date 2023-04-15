@@ -48,6 +48,7 @@ local function exec_patra_cmd(cmd)
   vim.fn.termopen(cmd, { on_exit = on_exit })
   buffer = vim.api.nvim_get_current_buf()
   vim.cmd("startinsert")
+  vim.cmd[[set ft=patra]]
 end
 
 local function get_hl(hl_name, fg_bg)
