@@ -70,6 +70,7 @@ local function get_hl(hl_name, fg_bg)
   return cursor_color
 end
 
+
 local function open_patra()
   prev_buf = vim.api.nvim_get_current_buf()
   prev_win = vim.api.nvim_get_current_win()
@@ -100,29 +101,22 @@ local function theme_update_content(theme, key, value)
 end
 
 local function setup_theme()
-  -- local dir          = get_hl("Number", "foreground")
-  local dir          = get_hl("Directory", "foreground")
-  local normal       = get_hl("Normal", "foreground")
-  -- local dir          = get_hl("Directory", "foreground")
-  local cursor_color = get_hl("CursorLine", "background")
-  -- TODO: get and pass Directory color
-
-
-  -- vim.print({ corsor = cursor_color, normal = normal, dir = dir })
   local theme = ''
-
-  if normal ~= "" then
-    theme = theme_update_content(theme, 'file_fg', normal)
-  end
-  if cursor_color ~= "" then
-    theme = theme_update_content(theme, 'file_focus_bg', cursor_color)
-  end
-  if dir ~= "" then
-    theme = theme_update_content(theme, 'dir_fg', dir)
+  local theme_tbl = {
+    dir_fg        = get_hl("Directory", "foreground"),
+    file_fg       = get_hl("Normal", "foreground"),
+    file_focus_bg = get_hl("CursorLine", "background"),
+    command_fg = get_hl("Statement", "foreground"),
+    dir_slash = get_hl("Function", "foreground")
+  }
+  for k, color in pairs(theme_tbl) do
+    -- vim.print({ k, color })
+    if color ~= "" then
+      theme = theme_update_content(theme, k, color)
+    end
   end
   vim.g.patra_config = vim.fn.tempname()
   local file = vim.g.patra_config
-  -- vim.print({ the = 'the theme', file, theme })
   write_to_file(file, theme)
 end
 
